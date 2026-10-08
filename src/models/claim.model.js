@@ -17,9 +17,19 @@ function approvalTierFor(amountUSD) {
   return 'auto';
 }
 
-// amountUSD is derived by the service from the exchange-rates file; null if the currency has no rate.
-// approvalTier is derived from amountUSD here and is never accepted from the client.
-function createClaim({ employeeName, description, category, amount, currency, amountUSD, expenseDate, status }) {
+// amountUSD and approvalTier are derived server-side (see services/valuation.service.js), never
+// accepted from the client; both are null if the currency has no exchange rate.
+function createClaim({
+  employeeName,
+  description,
+  category,
+  amount,
+  currency,
+  amountUSD,
+  approvalTier,
+  expenseDate,
+  status,
+}) {
   return {
     id: randomUUID(),
     employeeName,
@@ -28,7 +38,7 @@ function createClaim({ employeeName, description, category, amount, currency, am
     amount,
     currency,
     amountUSD: amountUSD ?? null,
-    approvalTier: approvalTierFor(amountUSD),
+    approvalTier: approvalTier ?? null,
     expenseDate,
     status: status ?? DEFAULT_STATUS,
   };

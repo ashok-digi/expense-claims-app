@@ -1,7 +1,7 @@
 const HttpError = require('../utils/httpError');
 const repository = require('../repositories/claims.repository');
-const { createClaim, approvalTierFor } = require('../models/claim.model');
-const ratesService = require('./rates.service');
+const { createClaim } = require('../models/claim.model');
+const { valueInUsd } = require('./valuation.service');
 
 /**
  * @typedef {'travel'|'meals'|'lodging'|'supplies'|'other'} Category
@@ -60,8 +60,8 @@ function get(id) {
  * @throws {Error} If the exchange-rates file cannot be read or is not valid JSON.
  */
 async function submit(data) {
-  const amountUSD = await ratesService.amountInUsd(data.amount, data.currency);
-  return repository.save(createClaim({ ...data, amountUSD }));
+  const usd = await valueInUsd(data.amount, data.currency);
+  return repository.save(createClaim({ ...data, ...usd }));
 }
 
 /**
@@ -76,12 +76,11 @@ async function submit(data) {
  */
 async function update(id, data) {
   const existing = get(id);
-  const amountUSD = await ratesService.amountInUsd(data.amount, data.currency);
+  const usd = await valueInUsd(data.amount, data.currency);
   return repository.save({
     ...existing,
     ...data,
-    amountUSD,
-    approvalTier: approvalTierFor(amountUSD),
+    ...usd,
     status: data.status ?? existing.status,
     id: existing.id,
   });
