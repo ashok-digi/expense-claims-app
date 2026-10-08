@@ -1,5 +1,6 @@
 const HttpError = require('../utils/httpError');
 const { roundMoney } = require('../utils/money');
+const { approvalTierFor } = require('../models/claim.model');
 const repository = require('../repositories/rates.repository');
 
 async function findRate(currency) {
@@ -16,7 +17,8 @@ async function convert(amount, currency) {
       `Currency ${currency} is not supported. Supported currencies: ${supported.join(', ')}`,
     );
   }
-  return { amount, currency, rate, amountUSD: roundMoney(amount / rate) };
+  const amountUSD = roundMoney(amount / rate);
+  return { amount, currency, rate, amountUSD, approvalTier: approvalTierFor(amountUSD) };
 }
 
 // For claims: the USD amount, or null when the currency has no rate.

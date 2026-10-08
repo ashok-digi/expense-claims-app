@@ -1,6 +1,6 @@
 const HttpError = require('../utils/httpError');
 const repository = require('../repositories/claims.repository');
-const { createClaim } = require('../models/claim.model');
+const { createClaim, approvalTierFor } = require('../models/claim.model');
 const ratesService = require('./rates.service');
 
 function list() {
@@ -19,7 +19,7 @@ async function submit(data) {
 }
 
 // Full replacement of the editable fields; status is kept if not supplied.
-// amountUSD is recomputed so it never goes stale when amount or currency changes.
+// amountUSD and approvalTier are recomputed so they never go stale when amount or currency changes.
 async function update(id, data) {
   const existing = get(id);
   const amountUSD = await ratesService.amountInUsd(data.amount, data.currency);
@@ -27,6 +27,7 @@ async function update(id, data) {
     ...existing,
     ...data,
     amountUSD,
+    approvalTier: approvalTierFor(amountUSD),
     status: data.status ?? existing.status,
     id: existing.id,
   });

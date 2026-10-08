@@ -1,5 +1,5 @@
 import { convertToUsd, listClaims, submitClaim } from './api.js';
-import { renderClaims } from './table.js';
+import { renderClaims, tierLabel } from './table.js';
 
 const tbody = document.getElementById('claims-body');
 const tableMessage = document.getElementById('table-message');
@@ -37,7 +37,7 @@ convertButton.addEventListener('click', async () => {
     const result = await convertToUsd(amount, currency);
     convertResult.textContent =
       `${result.amount.toFixed(2)} ${result.currency} ≈ ${result.amountUSD.toFixed(2)} USD ` +
-      `(rate: ${result.rate} ${result.currency} per 1 USD)`;
+      `(rate: ${result.rate} ${result.currency} per 1 USD). Approval tier: ${tierLabel(result.approvalTier)}`;
   } catch (err) {
     convertResult.textContent = err.message;
   }

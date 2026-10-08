@@ -11,7 +11,7 @@ function isValidDate(value) {
 }
 
 // Validates and normalizes the body for POST and PUT. Unknown fields are dropped, which includes
-// amountUSD: it is derived server-side and never accepted from the client.
+// amountUSD and approvalTier: they are derived server-side and never accepted from the client.
 // status is optional here; the model/service decide the default.
 function validateClaim(req, res, next) {
   const body = req.body;
