@@ -8,12 +8,12 @@ function get(req, res) {
   res.json(service.get(req.params.id));
 }
 
-function submit(req, res) {
-  res.status(201).json(service.submit(req.body));
+async function submit(req, res) {
+  res.status(201).json(await service.submit(req.body));
 }
 
-function update(req, res) {
-  res.json(service.update(req.params.id, req.body));
+async function update(req, res) {
+  res.json(await service.update(req.params.id, req.body));
 }
 
 function remove(req, res) {

@@ -4,7 +4,8 @@ const CATEGORIES = ['travel', 'meals', 'lodging', 'supplies', 'other'];
 const STATUSES = ['submitted', 'approved', 'rejected'];
 const DEFAULT_STATUS = 'submitted';
 
-function createClaim({ employeeName, description, category, amount, currency, expenseDate, status }) {
+// amountUSD is derived by the service from the exchange-rates file; null if the currency has no rate.
+function createClaim({ employeeName, description, category, amount, currency, amountUSD, expenseDate, status }) {
   return {
     id: randomUUID(),
     employeeName,
@@ -12,6 +13,7 @@ function createClaim({ employeeName, description, category, amount, currency, ex
     category,
     amount,
     currency,
+    amountUSD: amountUSD ?? null,
     expenseDate,
     status: status ?? DEFAULT_STATUS,
   };

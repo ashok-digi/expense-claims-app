@@ -19,6 +19,11 @@ export function listClaims() {
   return request(BASE_URL);
 }
 
+export function convertToUsd(amount, currency) {
+  const query = new URLSearchParams({ amount, currency });
+  return request(`/api/rates/convert?${query}`);
+}
+
 export function submitClaim(claim) {
   return request(BASE_URL, {
     method: 'POST',

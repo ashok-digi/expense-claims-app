@@ -46,6 +46,25 @@ form {
   max-width: 28rem;
 }
 
+.field {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.field > label {
+  font-weight: 600;
+}
+
+.inline {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.inline input {
+  flex: 1;
+  min-width: 0;
+}
+
 label {
   display: grid;
   gap: 0.25rem;
@@ -64,7 +83,8 @@ button {
 }
 
 #form-message,
-#table-message {
+#table-message,
+#convert-result {
   margin: 0;
   min-height: 1.2em;
 }

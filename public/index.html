@@ -21,6 +21,7 @@
               <th>Description</th>
               <th>Category</th>
               <th class="num">Amount</th>
+              <th class="num">USD equivalent</th>
               <th>Date</th>
               <th>Status</th>
             </tr>
@@ -48,9 +49,14 @@
             <option value="other">Other</option>
           </select>
         </label>
-        <label>Amount
-          <input name="amount" type="number" min="0.01" step="0.01" required>
-        </label>
+        <div class="field">
+          <label for="amount">Amount</label>
+          <div class="inline">
+            <input id="amount" name="amount" type="number" min="0.01" step="0.01" required>
+            <button type="button" id="convert-btn">Convert</button>
+          </div>
+          <p id="convert-result" role="status"></p>
+        </div>
         <label>Currency
           <input name="currency" type="text" value="USD" minlength="3" maxlength="3" pattern="[A-Za-z]{3}" required>
         </label>

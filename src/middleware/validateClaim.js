@@ -1,5 +1,6 @@
 const HttpError = require('../utils/httpError');
 const { CATEGORIES, STATUSES } = require('../models/claim.model');
+const { hasMaxTwoDecimals } = require('../utils/money');
 
 const isNonEmptyString = (value) => typeof value === 'string' && value.trim() !== '';
 
@@ -9,10 +10,8 @@ function isValidDate(value) {
   return !Number.isNaN(date.getTime()) && date.toISOString().slice(0, 10) === value;
 }
 
-// At most two decimal places, tolerant of floating-point noise (19.99 * 100 is not exact).
-const hasMaxTwoDecimals = (amount) => Math.abs(amount * 100 - Math.round(amount * 100)) < 1e-6;
-
-// Validates and normalizes the body for POST and PUT. Unknown fields are dropped.
+// Validates and normalizes the body for POST and PUT. Unknown fields are dropped, which includes
+// amountUSD: it is derived server-side and never accepted from the client.
 // status is optional here; the model/service decide the default.
 function validateClaim(req, res, next) {
   const body = req.body;

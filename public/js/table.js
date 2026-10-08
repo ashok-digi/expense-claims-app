@@ -14,6 +14,7 @@ export function renderClaims(tbody, claims) {
         cell(claim.description),
         cell(claim.category),
         cell(`${claim.amount.toFixed(2)} ${claim.currency}`, 'num'),
+        cell(claim.amountUSD == null ? '—' : `${claim.amountUSD.toFixed(2)} USD`, 'num'),
         cell(claim.expenseDate),
         cell(claim.status),
       );
