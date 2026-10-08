@@ -4,6 +4,9 @@ const CATEGORIES = ['travel', 'meals', 'lodging', 'supplies', 'other'];
 const STATUSES = ['submitted', 'approved', 'rejected'];
 const DEFAULT_STATUS = 'submitted';
 
+// Notes are meant to be short; the form input (public/index.html) uses the same limit.
+const NOTES_MAX_LENGTH = 200;
+
 // Approval tiers, by amountUSD: auto < MANAGER_MIN <= manager < FINANCE_MIN <= finance.
 const TIERS = ['auto', 'manager', 'finance'];
 const MANAGER_MIN_USD = 100;
@@ -23,6 +26,9 @@ function createClaim({
   employeeName,
   description,
   category,
+  projectCode,
+  costCenter,
+  notes,
   amount,
   currency,
   amountUSD,
@@ -35,6 +41,9 @@ function createClaim({
     employeeName,
     description,
     category,
+    projectCode: projectCode ?? null,
+    costCenter: costCenter ?? null,
+    notes: notes ?? null,
     amount,
     currency,
     amountUSD: amountUSD ?? null,
@@ -44,4 +53,12 @@ function createClaim({
   };
 }
 
-module.exports = { CATEGORIES, STATUSES, DEFAULT_STATUS, TIERS, approvalTierFor, createClaim };
+module.exports = {
+  CATEGORIES,
+  STATUSES,
+  DEFAULT_STATUS,
+  NOTES_MAX_LENGTH,
+  TIERS,
+  approvalTierFor,
+  createClaim,
+};

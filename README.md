@@ -66,6 +66,9 @@ tsconfig.json          frontend compiler settings (strict)
 | `employeeName` | string | required, trimmed |
 | `description` | string | required, trimmed |
 | `category` | string | `travel`, `meals`, `lodging`, `supplies`, `other` |
+| `projectCode` | string \| null | optional free-text project code; trimmed, and blank or omitted is stored as `null` |
+| `costCenter` | string \| null | optional free-text cost center; trimmed, and blank or omitted is stored as `null` |
+| `notes` | string \| null | optional short note, at most 200 characters; trimmed, and blank or omitted is stored as `null` |
 | `amount` | number | positive, at most two decimal places |
 | `currency` | string | 3-letter code, stored uppercase (e.g. `EUR`) |
 | `amountUSD` | number \| null | **read-only**, derived from `amount` and the rates file; `null` if the currency has no rate |
@@ -111,6 +114,9 @@ Validation errors (400) add a `details` array with one entry per problem:
 
 - `employeeName`, `description`: non-empty strings
 - `category`: one of `travel`, `meals`, `lodging`, `supplies`, `other`
+- `projectCode`: optional; a string if present (surrounding whitespace is trimmed; `null`, blank or omitted all mean "no project code")
+- `costCenter`: optional; a string if present (surrounding whitespace is trimmed; `null`, blank or omitted all mean "no cost center")
+- `notes`: optional; a string of at most 200 characters (after trimming) if present; `null`, blank or omitted all mean "no notes"
 - `amount`: a JSON **number** (not a string), greater than 0, at most two decimal places
 - `currency`: exactly 3 letters; it does not have to be in the rates file
 - `expenseDate`: `YYYY-MM-DD` and a real date (`2026-02-30` is rejected)
@@ -133,6 +139,9 @@ curl http://localhost:3000/api/claims
     "employeeName": "Ann",
     "description": "Hotel",
     "category": "lodging",
+    "projectCode": "PRJ-42",
+    "costCenter": "CC-1001",
+    "notes": "Conference stay",
     "amount": 250,
     "currency": "EUR",
     "amountUSD": 271.74,
@@ -171,6 +180,9 @@ curl -X POST http://localhost:3000/api/claims \
     "employeeName": "Ann",
     "description": "Hotel",
     "category": "lodging",
+    "projectCode": "PRJ-42",
+    "costCenter": "CC-1001",
+    "notes": "Conference stay",
     "amount": 250,
     "currency": "eur",
     "expenseDate": "2026-10-01"
@@ -185,6 +197,9 @@ curl -X POST http://localhost:3000/api/claims \
   "employeeName": "Ann",
   "description": "Hotel",
   "category": "lodging",
+  "projectCode": "PRJ-42",
+  "costCenter": "CC-1001",
+  "notes": "Conference stay",
   "amount": 250,
   "currency": "EUR",
   "amountUSD": 271.74,
@@ -204,6 +219,9 @@ A claim in a currency with no rate is still accepted, but `amountUSD` and `appro
   "employeeName": "Bo",
   "description": "Lunch",
   "category": "meals",
+  "projectCode": null,
+  "costCenter": null,
+  "notes": null,
   "amount": 1500,
   "currency": "JPY",
   "amountUSD": null,
@@ -215,7 +233,7 @@ A claim in a currency with no rate is still accepted, but `amountUSD` and `appro
 
 ### `PUT /api/claims/:id`
 
-Replace a claim's editable fields. It takes the same body and rules as `POST`, so all required fields must be sent. If `status` is omitted, the existing status is kept. `id` never changes. `amountUSD` and `approvalTier` are recomputed from the new amount and currency.
+Replace a claim's editable fields. It takes the same body and rules as `POST`, so all required fields must be sent. If `status` is omitted, the existing status is kept. `projectCode`, `costCenter` and `notes` are optional, but because `PUT` replaces the claim, omitting any of them clears its existing value. `id` never changes. `amountUSD` and `approvalTier` are recomputed from the new amount and currency.
 
 ```bash
 curl -X PUT http://localhost:3000/api/claims/3538e2a0-f9cb-4d99-93bd-b5afb722ffb5 \
@@ -224,6 +242,9 @@ curl -X PUT http://localhost:3000/api/claims/3538e2a0-f9cb-4d99-93bd-b5afb722ffb
     "employeeName": "Ann",
     "description": "Hotel",
     "category": "lodging",
+    "projectCode": "PRJ-42",
+    "costCenter": "CC-1001",
+    "notes": "Conference stay",
     "amount": 600,
     "currency": "EUR",
     "expenseDate": "2026-10-01",
@@ -239,6 +260,9 @@ curl -X PUT http://localhost:3000/api/claims/3538e2a0-f9cb-4d99-93bd-b5afb722ffb
   "employeeName": "Ann",
   "description": "Hotel",
   "category": "lodging",
+  "projectCode": "PRJ-42",
+  "costCenter": "CC-1001",
+  "notes": "Conference stay",
   "amount": 600,
   "currency": "EUR",
   "amountUSD": 652.17,

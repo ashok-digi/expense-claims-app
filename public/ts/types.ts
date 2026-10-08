@@ -14,6 +14,12 @@ export interface Claim {
   employeeName: string;
   description: string;
   category: Category;
+  /** Optional project code; null when none was given. */
+  projectCode: string | null;
+  /** Optional cost center; null when none was given. */
+  costCenter: string | null;
+  /** Optional short note (at most 200 characters); null when none was given. */
+  notes: string | null;
   amount: number;
   currency: string;
   /** Null when the currency has no exchange rate. */
@@ -28,7 +34,7 @@ export interface Claim {
 /** What the client sends to submit a claim; id, USD amount, tier and status are set by the server. */
 export type ClaimInput = Pick<
   Claim,
-  'employeeName' | 'description' | 'category' | 'amount' | 'currency' | 'expenseDate'
+  'employeeName' | 'description' | 'category' | 'projectCode' | 'costCenter' | 'notes' | 'amount' | 'currency' | 'expenseDate'
 >;
 
 export interface ConversionResult {
@@ -68,6 +74,9 @@ export function isClaim(value: unknown): value is Claim {
     typeof value.employeeName === 'string' &&
     typeof value.description === 'string' &&
     isCategory(value.category) &&
+    (value.projectCode === null || typeof value.projectCode === 'string') &&
+    (value.costCenter === null || typeof value.costCenter === 'string') &&
+    (value.notes === null || typeof value.notes === 'string') &&
     typeof value.amount === 'number' &&
     typeof value.currency === 'string' &&
     (value.amountUSD === null || typeof value.amountUSD === 'number') &&

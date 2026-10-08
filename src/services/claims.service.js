@@ -12,6 +12,9 @@ const { valueInUsd } = require('./valuation.service');
  * @property {string} employeeName
  * @property {string} description
  * @property {Category} category
+ * @property {string|null} projectCode Optional project code; null when none was given.
+ * @property {string|null} costCenter Optional cost center; null when none was given.
+ * @property {string|null} notes Optional short note (at most 200 characters); null when none was given.
  * @property {number} amount Positive, at most two decimal places.
  * @property {string} currency Uppercase 3-letter code.
  * @property {string} expenseDate Calendar date in YYYY-MM-DD format.
@@ -22,6 +25,9 @@ const { valueInUsd } = require('./valuation.service');
  * @property {string} employeeName
  * @property {string} description
  * @property {Category} category
+ * @property {string|null} projectCode
+ * @property {string|null} costCenter
+ * @property {string|null} notes
  * @property {number} amount
  * @property {string} currency
  * @property {number|null} amountUSD Null when the currency has no exchange rate.

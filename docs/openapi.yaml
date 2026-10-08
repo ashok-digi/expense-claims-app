@@ -57,6 +57,9 @@ paths:
               employeeName: Ann
               description: Hotel
               category: lodging
+              projectCode: PRJ-42
+              costCenter: CC-1001
+              notes: Conference stay
               amount: 250
               currency: eur
               expenseDate: '2026-10-01'
@@ -75,6 +78,9 @@ paths:
                     employeeName: Ann
                     description: Hotel
                     category: lodging
+                    projectCode: PRJ-42
+                    costCenter: CC-1001
+                    notes: Conference stay
                     amount: 250
                     currency: EUR
                     amountUSD: 271.74
@@ -88,6 +94,9 @@ paths:
                     employeeName: Bo
                     description: Lunch
                     category: meals
+                    projectCode: null
+                    costCenter: null
+                    notes: null
                     amount: 1500
                     currency: JPY
                     amountUSD: null
@@ -135,6 +144,9 @@ paths:
               employeeName: Ann
               description: Hotel
               category: lodging
+              projectCode: PRJ-42
+              costCenter: CC-1001
+              notes: Conference stay
               amount: 600
               currency: EUR
               expenseDate: '2026-10-01'
@@ -151,6 +163,9 @@ paths:
                 employeeName: Ann
                 description: Hotel
                 category: lodging
+                projectCode: PRJ-42
+                costCenter: CC-1001
+                notes: Conference stay
                 amount: 600
                 currency: EUR
                 amountUSD: 652.17
@@ -269,6 +284,16 @@ components:
           description: Required, non-blank; surrounding whitespace is trimmed.
         category:
           $ref: '#/components/schemas/Category'
+        projectCode:
+          type: [string, 'null']
+          description: Optional. Surrounding whitespace is trimmed; `null`, blank or omitted all mean no project code. Because PUT replaces the claim, omitting it on update clears any existing code.
+        costCenter:
+          type: [string, 'null']
+          description: Optional. Surrounding whitespace is trimmed; `null`, blank or omitted all mean no cost center. Because PUT replaces the claim, omitting it on update clears any existing value.
+        notes:
+          type: [string, 'null']
+          maxLength: 200
+          description: Optional short note, at most 200 characters after trimming; `null`, blank or omitted all mean no notes. Because PUT replaces the claim, omitting it on update clears any existing note.
         amount:
           type: number
           exclusiveMinimum: 0
@@ -286,7 +311,7 @@ components:
 
     Claim:
       type: object
-      required: [id, employeeName, description, category, amount, currency, amountUSD, approvalTier, expenseDate, status]
+      required: [id, employeeName, description, category, projectCode, costCenter, notes, amount, currency, amountUSD, approvalTier, expenseDate, status]
       properties:
         id:
           type: string
@@ -298,6 +323,15 @@ components:
           type: string
         category:
           $ref: '#/components/schemas/Category'
+        projectCode:
+          type: [string, 'null']
+          description: Optional project code; `null` when none was given.
+        costCenter:
+          type: [string, 'null']
+          description: Optional cost center; `null` when none was given.
+        notes:
+          type: [string, 'null']
+          description: Optional short note (at most 200 characters); `null` when none was given.
         amount:
           type: number
         currency:

@@ -1,5 +1,5 @@
 const HttpError = require('../utils/httpError');
-const { CATEGORIES, STATUSES } = require('../models/claim.model');
+const { CATEGORIES, STATUSES, NOTES_MAX_LENGTH } = require('../models/claim.model');
 const { hasMaxTwoDecimals } = require('../utils/money');
 
 const isNonEmptyString = (value) => typeof value === 'string' && value.trim() !== '';
@@ -30,6 +30,25 @@ function validateClaim(req, res, next) {
     fail('category', `category must be one of: ${CATEGORIES.join(', ')}`);
   }
 
+  // Optional: omitted, null, or blank all mean "no project code".
+  if (body.projectCode !== undefined && body.projectCode !== null && typeof body.projectCode !== 'string') {
+    fail('projectCode', 'projectCode must be a string');
+  }
+
+  // Optional: omitted, null, or blank all mean "no cost center".
+  if (body.costCenter !== undefined && body.costCenter !== null && typeof body.costCenter !== 'string') {
+    fail('costCenter', 'costCenter must be a string');
+  }
+
+  // Optional short note: omitted, null, or blank all mean "no notes".
+  if (body.notes !== undefined && body.notes !== null) {
+    if (typeof body.notes !== 'string') {
+      fail('notes', 'notes must be a string');
+    } else if (body.notes.trim().length > NOTES_MAX_LENGTH) {
+      fail('notes', `notes must be at most ${NOTES_MAX_LENGTH} characters`);
+    }
+  }
+
   if (body.amount === undefined) fail('amount', 'amount is required');
   else if (typeof body.amount !== 'number' || !Number.isFinite(body.amount) || body.amount <= 0) {
     fail('amount', 'amount must be a positive number');
@@ -53,10 +72,17 @@ function validateClaim(req, res, next) {
 
   if (errors.length > 0) throw new HttpError(400, 'Validation failed', errors);
 
+  const projectCode = typeof body.projectCode === 'string' ? body.projectCode.trim() : '';
+  const costCenter = typeof body.costCenter === 'string' ? body.costCenter.trim() : '';
+  const notes = typeof body.notes === 'string' ? body.notes.trim() : '';
+
   req.body = {
     employeeName: body.employeeName.trim(),
     description: body.description.trim(),
     category: body.category,
+    projectCode: projectCode === '' ? null : projectCode,
+    costCenter: costCenter === '' ? null : costCenter,
+    notes: notes === '' ? null : notes,
     amount: body.amount,
     currency: body.currency.toUpperCase(),
     expenseDate: body.expenseDate,

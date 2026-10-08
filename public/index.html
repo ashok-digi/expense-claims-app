@@ -20,6 +20,9 @@
               <th>Employee</th>
               <th>Description</th>
               <th>Category</th>
+              <th>Project code</th>
+              <th>Cost center</th>
+              <th>Notes</th>
               <th class="num">Amount</th>
               <th class="num">USD equivalent</th>
               <th>Approval tier</th>
@@ -49,6 +52,15 @@
             <option value="supplies">Supplies</option>
             <option value="other">Other</option>
           </select>
+        </label>
+        <label>Project code (optional)
+          <input name="projectCode" type="text">
+        </label>
+        <label>Cost center (optional)
+          <input name="costCenter" type="text">
+        </label>
+        <label>Notes (optional, up to 200 characters)
+          <input name="notes" type="text" maxlength="200">
         </label>
         <div class="field">
           <label for="amount">Amount</label>

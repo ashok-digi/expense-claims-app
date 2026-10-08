@@ -14,6 +14,9 @@ const convertResult = requireElement(document, '#convert-result', HTMLElement);
 const employeeNameInput = requireElement(form, '[name="employeeName"]', HTMLInputElement);
 const descriptionInput = requireElement(form, '[name="description"]', HTMLInputElement);
 const categoryInput = requireElement(form, '[name="category"]', HTMLSelectElement);
+const projectCodeInput = requireElement(form, '[name="projectCode"]', HTMLInputElement);
+const costCenterInput = requireElement(form, '[name="costCenter"]', HTMLInputElement);
+const notesInput = requireElement(form, '[name="notes"]', HTMLInputElement);
 const amountInput = requireElement(form, '[name="amount"]', HTMLInputElement);
 const currencyInput = requireElement(form, '[name="currency"]', HTMLInputElement);
 const expenseDateInput = requireElement(form, '[name="expenseDate"]', HTMLInputElement);
@@ -73,6 +76,9 @@ form.addEventListener('submit', async (event) => {
     employeeName: employeeNameInput.value,
     description: descriptionInput.value,
     category,
+    projectCode: projectCodeInput.value.trim() || null,
+    costCenter: costCenterInput.value.trim() || null,
+    notes: notesInput.value.trim() || null,
     amount: amountInput.valueAsNumber,
     currency: currencyInput.value,
     expenseDate: expenseDateInput.value,
