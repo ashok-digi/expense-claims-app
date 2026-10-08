@@ -1,9 +1,9 @@
 # Expense Claims App
 
-A small expense-claims app: a Node/Express JSON API with in-memory storage, and a plain HTML/CSS/JS frontend served by the same server. Employees submit claims, see them in a table, and each claim gets a USD equivalent and an approval tier.
+A small expense-claims app: a Node/Express JSON API with in-memory storage, and a TypeScript frontend (compiled to plain browser modules) served by the same server. Employees submit claims, see them in a table, and each claim gets a USD equivalent and an approval tier.
 
 - **Backend:** Express 5, layered (routes → controllers → services → repositories)
-- **Frontend:** static files in `public/`, ES modules, no build step
+- **Frontend:** TypeScript in `public/ts/`, compiled by `tsc` to ES modules in `public/js/` (generated, git-ignored); `index.html` and `css/` are served as-is
 - **Storage:** in memory. All claims are lost when the server restarts.
 
 ## Setup
@@ -20,10 +20,14 @@ cp .env.example .env   # optional; only sets PORT
 ## Running the app
 
 ```bash
-npm run dev     # start with nodemon (restarts on file changes)
-npm start       # start with plain node
-npm test        # placeholder; there are no tests yet
+npm run dev        # build, then run with nodemon (rebuilds and restarts when src/ or public/ts/ change)
+npm start          # build, then run with plain node
+npm run build      # compile public/ts/*.ts to public/js/
+npm run typecheck  # type-check the frontend without emitting files
+npm test           # placeholder; there are no tests yet
 ```
+
+`dev` and `start` compile the frontend first, so `public/js/` always exists when the server runs.
 
 Then open:
 
@@ -46,8 +50,12 @@ src/
   models/              claim shape, categories, statuses, approval tiers
   middleware/          validation, 404, error handler
   utils/               HttpError, money helpers
-public/                frontend (index.html, css/, js/)
+public/
+  index.html, css/     served as-is
+  ts/                  frontend source (types.ts holds the shared Claim type)
+  js/                  compiled output of ts/ (generated; do not edit)
 data/exchange-rates.json   exchange-rate source
+tsconfig.json          frontend compiler settings (strict)
 ```
 
 ## Claim object
