@@ -3,6 +3,7 @@ name: add-claim-field
 description: Add a new attribute to expense claims consistently across the model, validation, README, OpenAPI spec, and the frontend table and form in one pass. Use whenever a new claim attribute or field is requested (e.g. "add a notes field", "track project code on claims", "claims need a receipt URL").
 argument-hint: <fieldName> <type> [required|optional]
 disable-model-invocation: true
+context: fork
 ---
 
 # Add a claim field

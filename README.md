@@ -74,6 +74,7 @@ tsconfig.json          frontend compiler settings (strict)
 | `amountUSD` | number \| null | **read-only**, derived from `amount` and the rates file; `null` if the currency has no rate |
 | `approvalTier` | string \| null | **read-only**, derived from `amountUSD`; see [Approval tiers](#approval-tiers) |
 | `expenseDate` | string | `YYYY-MM-DD`, must be a real calendar date |
+| `paymentMethod` | string \| null | optional; one of `card`, `cash`, `bank transfer`; `null` or omitted is stored as `null` |
 | `status` | string | `submitted` (default), `approved`, `rejected` |
 
 `amountUSD` and `approvalTier` are always computed by the server. If a request includes them, they are ignored, as are any other unknown fields.
@@ -120,6 +121,7 @@ Validation errors (400) add a `details` array with one entry per problem:
 - `amount`: a JSON **number** (not a string), greater than 0, at most two decimal places
 - `currency`: exactly 3 letters; it does not have to be in the rates file
 - `expenseDate`: `YYYY-MM-DD` and a real date (`2026-02-30` is rejected)
+- `paymentMethod`: optional; one of `card`, `cash`, `bank transfer`; `null` or omitted means "no payment method"
 - `status`: optional; one of `submitted`, `approved`, `rejected`
 
 ### `GET /api/claims`
@@ -147,6 +149,7 @@ curl http://localhost:3000/api/claims
     "amountUSD": 271.74,
     "approvalTier": "manager",
     "expenseDate": "2026-10-01",
+    "paymentMethod": "card",
     "status": "submitted"
   }
 ]
@@ -185,7 +188,8 @@ curl -X POST http://localhost:3000/api/claims \
     "notes": "Conference stay",
     "amount": 250,
     "currency": "eur",
-    "expenseDate": "2026-10-01"
+    "expenseDate": "2026-10-01",
+    "paymentMethod": "card"
   }'
 ```
 
@@ -205,6 +209,7 @@ curl -X POST http://localhost:3000/api/claims \
   "amountUSD": 271.74,
   "approvalTier": "manager",
   "expenseDate": "2026-10-01",
+  "paymentMethod": "card",
   "status": "submitted"
 }
 ```
@@ -227,13 +232,14 @@ A claim in a currency with no rate is still accepted, but `amountUSD` and `appro
   "amountUSD": null,
   "approvalTier": null,
   "expenseDate": "2026-10-02",
+  "paymentMethod": null,
   "status": "submitted"
 }
 ```
 
 ### `PUT /api/claims/:id`
 
-Replace a claim's editable fields. It takes the same body and rules as `POST`, so all required fields must be sent. If `status` is omitted, the existing status is kept. `projectCode`, `costCenter` and `notes` are optional, but because `PUT` replaces the claim, omitting any of them clears its existing value. `id` never changes. `amountUSD` and `approvalTier` are recomputed from the new amount and currency.
+Replace a claim's editable fields. It takes the same body and rules as `POST`, so all required fields must be sent. If `status` is omitted, the existing status is kept. `projectCode`, `costCenter`, `notes` and `paymentMethod` are optional, but because `PUT` replaces the claim, omitting any of them clears its existing value. `id` never changes. `amountUSD` and `approvalTier` are recomputed from the new amount and currency.
 
 ```bash
 curl -X PUT http://localhost:3000/api/claims/3538e2a0-f9cb-4d99-93bd-b5afb722ffb5 \
@@ -248,6 +254,7 @@ curl -X PUT http://localhost:3000/api/claims/3538e2a0-f9cb-4d99-93bd-b5afb722ffb
     "amount": 600,
     "currency": "EUR",
     "expenseDate": "2026-10-01",
+    "paymentMethod": "card",
     "status": "approved"
   }'
 ```
@@ -268,6 +275,7 @@ curl -X PUT http://localhost:3000/api/claims/3538e2a0-f9cb-4d99-93bd-b5afb722ffb
   "amountUSD": 652.17,
   "approvalTier": "finance",
   "expenseDate": "2026-10-01",
+  "paymentMethod": "card",
   "status": "approved"
 }
 ```

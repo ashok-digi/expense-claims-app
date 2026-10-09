@@ -1,6 +1,7 @@
 const { randomUUID } = require('node:crypto');
 
 const CATEGORIES = ['travel', 'meals', 'lodging', 'supplies', 'other'];
+const PAYMENT_METHODS = ['card', 'cash', 'bank transfer'];
 const STATUSES = ['submitted', 'approved', 'rejected'];
 const DEFAULT_STATUS = 'submitted';
 
@@ -34,7 +35,7 @@ function createClaim({
   amountUSD,
   approvalTier,
   expenseDate,
-  status,
+  paymentMethod,
 }) {
   return {
     id: randomUUID(),
@@ -49,12 +50,14 @@ function createClaim({
     amountUSD: amountUSD ?? null,
     approvalTier: approvalTier ?? null,
     expenseDate,
-    status: status ?? DEFAULT_STATUS,
+    paymentMethod: paymentMethod ?? null,
+    status: DEFAULT_STATUS,
   };
 }
 
 module.exports = {
   CATEGORIES,
+  PAYMENT_METHODS,
   STATUSES,
   DEFAULT_STATUS,
   NOTES_MAX_LENGTH,

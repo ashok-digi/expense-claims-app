@@ -3,6 +3,9 @@
 export const CATEGORIES = ['travel', 'meals', 'lodging', 'supplies', 'other'] as const;
 export type Category = (typeof CATEGORIES)[number];
 
+export const PAYMENT_METHODS = ['card', 'cash', 'bank transfer'] as const;
+export type PaymentMethod = (typeof PAYMENT_METHODS)[number];
+
 export const STATUSES = ['submitted', 'approved', 'rejected'] as const;
 export type Status = (typeof STATUSES)[number];
 
@@ -28,13 +31,15 @@ export interface Claim {
   approvalTier: ApprovalTier | null;
   /** YYYY-MM-DD */
   expenseDate: string;
+  /** Optional; null when none was given. */
+  paymentMethod: PaymentMethod | null;
   status: Status;
 }
 
 /** What the client sends to submit a claim; id, USD amount, tier and status are set by the server. */
 export type ClaimInput = Pick<
   Claim,
-  'employeeName' | 'description' | 'category' | 'projectCode' | 'costCenter' | 'notes' | 'amount' | 'currency' | 'expenseDate'
+  'employeeName' | 'description' | 'category' | 'projectCode' | 'costCenter' | 'notes' | 'amount' | 'currency' | 'expenseDate' | 'paymentMethod'
 >;
 
 export interface ConversionResult {
@@ -54,6 +59,10 @@ export function isRecord(value: unknown): value is Record<string, unknown> {
 
 export function isCategory(value: unknown): value is Category {
   return CATEGORIES.some((category) => category === value);
+}
+
+export function isPaymentMethod(value: unknown): value is PaymentMethod {
+  return PAYMENT_METHODS.some((method) => method === value);
 }
 
 function isStatus(value: unknown): value is Status {
@@ -82,6 +91,7 @@ export function isClaim(value: unknown): value is Claim {
     (value.amountUSD === null || typeof value.amountUSD === 'number') &&
     isNullableTier(value.approvalTier) &&
     typeof value.expenseDate === 'string' &&
+    (value.paymentMethod === null || isPaymentMethod(value.paymentMethod)) &&
     isStatus(value.status)
   );
 }

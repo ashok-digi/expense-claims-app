@@ -45,6 +45,7 @@ export function toClaimRow(claim: Claim): ClaimRow {
     { text: formatUsd(claim.amountUSD), className: NUMERIC_CLASS },
     { text: tierLabel(claim.approvalTier) },
     { text: claim.expenseDate },
+    { text: claim.paymentMethod ?? NO_VALUE },
     { text: claim.status },
   ];
 }

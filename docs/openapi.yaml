@@ -44,7 +44,7 @@ paths:
       operationId: submitClaim
       summary: Submit a claim
       description: |
-        Creates a claim. `status` is optional and defaults to `submitted`. The server derives
+        Creates a claim. New claims always start as `submitted`; any `status` sent is ignored. The server derives
         `amountUSD` and `approvalTier`; both are `null` when the currency is not in the rates file
         (the claim is still accepted).
       requestBody:
@@ -63,6 +63,7 @@ paths:
               amount: 250
               currency: eur
               expenseDate: '2026-10-01'
+              paymentMethod: card
       responses:
         '201':
           description: The created claim.
@@ -86,6 +87,7 @@ paths:
                     amountUSD: 271.74
                     approvalTier: manager
                     expenseDate: '2026-10-01'
+                    paymentMethod: card
                     status: submitted
                 unsupportedCurrency:
                   summary: Currency not in the rates file
@@ -102,6 +104,7 @@ paths:
                     amountUSD: null
                     approvalTier: null
                     expenseDate: '2026-10-02'
+                    paymentMethod: null
                     status: submitted
         '400':
           $ref: '#/components/responses/BadRequest'
@@ -132,7 +135,7 @@ paths:
       summary: Update a claim
       description: |
         Replaces the claim's editable fields. The same fields are required as for submitting, so
-        send the full set. If `status` is omitted the existing status is kept. The id never changes,
+        send the full set. The claim's status is never changed by this endpoint (any `status` sent is ignored). The id never changes,
         and `amountUSD` and `approvalTier` are recomputed from the new amount and currency.
       requestBody:
         required: true
@@ -150,7 +153,7 @@ paths:
               amount: 600
               currency: EUR
               expenseDate: '2026-10-01'
-              status: approved
+              paymentMethod: card
       responses:
         '200':
           description: The updated claim.
@@ -171,7 +174,8 @@ paths:
                 amountUSD: 652.17
                 approvalTier: finance
                 expenseDate: '2026-10-01'
-                status: approved
+                paymentMethod: card
+                status: submitted
         '400':
           $ref: '#/components/responses/BadRequest'
         '404':
@@ -262,6 +266,11 @@ components:
       type: string
       enum: [submitted, approved, rejected]
 
+    PaymentMethod:
+      type: [string, 'null']
+      enum: [card, cash, bank transfer, null]
+      description: Optional; `null` or omitted means no payment method. Because PUT replaces the claim, omitting it on update clears any existing value.
+
     ApprovalTier:
       type: [string, 'null']
       enum: [auto, manager, finance, null]
@@ -272,7 +281,7 @@ components:
     ClaimInput:
       type: object
       required: [employeeName, description, category, amount, currency, expenseDate]
-      description: Fields a client may send. Unknown fields (including `amountUSD` and `approvalTier`) are ignored.
+      description: Fields a client may send. Unknown fields (including `amountUSD`, `approvalTier` and `status`) are ignored.
       properties:
         employeeName:
           type: string
@@ -306,12 +315,12 @@ components:
           type: string
           format: date
           description: A real calendar date in YYYY-MM-DD format.
-        status:
-          $ref: '#/components/schemas/Status'
+        paymentMethod:
+          $ref: '#/components/schemas/PaymentMethod'
 
     Claim:
       type: object
-      required: [id, employeeName, description, category, projectCode, costCenter, notes, amount, currency, amountUSD, approvalTier, expenseDate, status]
+      required: [id, employeeName, description, category, projectCode, costCenter, notes, amount, currency, amountUSD, approvalTier, expenseDate, paymentMethod, status]
       properties:
         id:
           type: string
@@ -348,6 +357,8 @@ components:
         expenseDate:
           type: string
           format: date
+        paymentMethod:
+          $ref: '#/components/schemas/PaymentMethod'
         status:
           $ref: '#/components/schemas/Status'
 

@@ -27,6 +27,7 @@
               <th class="num">USD equivalent</th>
               <th>Approval tier</th>
               <th>Date</th>
+              <th>Payment method</th>
               <th>Status</th>
             </tr>
           </thead>
@@ -75,6 +76,14 @@
         </label>
         <label>Expense date
           <input name="expenseDate" type="date" required>
+        </label>
+        <label>Payment method (optional)
+          <select name="paymentMethod">
+            <option value="">None</option>
+            <option value="card">Card</option>
+            <option value="cash">Cash</option>
+            <option value="bank transfer">Bank transfer</option>
+          </select>
         </label>
         <button type="submit">Submit claim</button>
         <p id="form-message" role="alert"></p>

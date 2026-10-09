@@ -2,7 +2,7 @@ import { convertToUsd, listClaims, submitClaim } from './api.js';
 import { requireElement } from './dom.js';
 import { tierLabel } from './claimRows.js';
 import { renderClaims } from './table.js';
-import { isCategory, type ClaimInput } from './types.js';
+import { isCategory, isPaymentMethod, type ClaimInput } from './types.js';
 
 const tbody = requireElement(document, '#claims-body', HTMLTableSectionElement);
 const tableMessage = requireElement(document, '#table-message', HTMLElement);
@@ -20,6 +20,7 @@ const notesInput = requireElement(form, '[name="notes"]', HTMLInputElement);
 const amountInput = requireElement(form, '[name="amount"]', HTMLInputElement);
 const currencyInput = requireElement(form, '[name="currency"]', HTMLInputElement);
 const expenseDateInput = requireElement(form, '[name="expenseDate"]', HTMLInputElement);
+const paymentMethodInput = requireElement(form, '[name="paymentMethod"]', HTMLSelectElement);
 
 const messageOf = (err: unknown): string => (err instanceof Error ? err.message : String(err));
 
@@ -72,6 +73,7 @@ form.addEventListener('submit', async (event) => {
     formMessage.textContent = 'Choose a category.';
     return;
   }
+  const paymentMethod = isPaymentMethod(paymentMethodInput.value) ? paymentMethodInput.value : null;
   const claim: ClaimInput = {
     employeeName: employeeNameInput.value,
     description: descriptionInput.value,
@@ -82,6 +84,7 @@ form.addEventListener('submit', async (event) => {
     amount: amountInput.valueAsNumber,
     currency: currencyInput.value,
     expenseDate: expenseDateInput.value,
+    paymentMethod,
   };
 
   try {

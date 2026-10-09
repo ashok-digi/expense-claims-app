@@ -1,5 +1,5 @@
 const HttpError = require('../utils/httpError');
-const { CATEGORIES, STATUSES, NOTES_MAX_LENGTH } = require('../models/claim.model');
+const { CATEGORIES, PAYMENT_METHODS, NOTES_MAX_LENGTH } = require('../models/claim.model');
 const { hasMaxTwoDecimals } = require('../utils/money');
 
 const isNonEmptyString = (value) => typeof value === 'string' && value.trim() !== '';
@@ -11,8 +11,7 @@ function isValidDate(value) {
 }
 
 // Validates and normalizes the body for POST and PUT. Unknown fields are dropped, which includes
-// amountUSD and approvalTier: they are derived server-side and never accepted from the client.
-// status is optional here; the model/service decide the default.
+// amountUSD, approvalTier and status: they are set server-side and never accepted from the client.
 function validateClaim(req, res, next) {
   const body = req.body;
   if (typeof body !== 'object' || body === null || Array.isArray(body)) {
@@ -66,8 +65,9 @@ function validateClaim(req, res, next) {
     fail('expenseDate', 'expenseDate must be a valid date in YYYY-MM-DD format');
   }
 
-  if (body.status !== undefined && !STATUSES.includes(body.status)) {
-    fail('status', `status must be one of: ${STATUSES.join(', ')}`);
+  // Optional: omitted or null means "no payment method".
+  if (body.paymentMethod !== undefined && body.paymentMethod !== null && !PAYMENT_METHODS.includes(body.paymentMethod)) {
+    fail('paymentMethod', `paymentMethod must be one of: ${PAYMENT_METHODS.join(', ')}`);
   }
 
   if (errors.length > 0) throw new HttpError(400, 'Validation failed', errors);
@@ -86,7 +86,7 @@ function validateClaim(req, res, next) {
     amount: body.amount,
     currency: body.currency.toUpperCase(),
     expenseDate: body.expenseDate,
-    ...(body.status !== undefined && { status: body.status }),
+    paymentMethod: body.paymentMethod ?? null,
   };
   next();
 }
