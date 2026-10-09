@@ -1,0 +1,6 @@
+{
+  "name": "expenses-toolkit",
+  "version": "1.0.0",
+  "description": "Expense claims toolkit: add-claim-field skill, compliance-reviewer subagent, and hooks that protect exchange-rates.json and keep an edit audit log.",
+  "author": { "name": "Ashok kumar", "email": "ashok@digi-safari.com" }
+}

@@ -32,5 +32,8 @@
         ]
       }
     ]
+  },
+  "enabledPlugins": {
+    "expenses-toolkit@expenses-toolkit-marketplace": true
   }
 }

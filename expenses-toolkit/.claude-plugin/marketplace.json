@@ -1,0 +1,12 @@
+{
+  "name": "expenses-toolkit-marketplace",
+  "description": "Single-plugin marketplace for the expenses-toolkit plugin.",
+  "owner": { "name": "Ashok kumar", "email": "ashok@digi-safari.com" },
+  "plugins": [
+    {
+      "name": "expenses-toolkit",
+      "source": "./",
+      "description": "Expense claims toolkit: add-claim-field skill, compliance-reviewer subagent, and hooks that protect exchange-rates.json and keep an edit audit log."
+    }
+  ]
+}
